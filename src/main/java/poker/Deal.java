@@ -1,6 +1,7 @@
 package poker;
 import org.apache.log4j.*;
 import java.util.*;
+import java.util.ListIterator;
 import poker.Card;
 import poker.Deck;
 
@@ -10,9 +11,10 @@ public class Deal {
     private final Logger logger = Logger.getLogger(Deal.class.getName());
     private Deck deck;
     private int numberOfPlayers;
-    private Card[][] holeCards;
+    private List<HumanPlayer> playersInGame;
     private Card[] communityCards = new Card[5];
     private StateOfHand stateOfHand;
+    private HumanPlayer newPlayer;
 
     /**
      * The state of the dealer.
@@ -26,13 +28,14 @@ public class Deal {
         RIVER
     }
 
-    private boolean scored = false;
+    //private boolean scored = false;
 
     public Deal() {
         // default deck
         logger.debug("Trace Message!");
         stateOfHand = StateOfHand.CLEAR;
         deck = new Deck();
+        playersInGame = new ArrayList<>();
         setNumberOfPlayers(4);
     }
 
@@ -40,6 +43,7 @@ public class Deal {
      * performs one step of the card dealing process
      */
     public void deal() {
+        logger.debug("This is where I left off");
         switch (stateOfHand) {
             case CLEAR:
                 newDeal();
@@ -54,7 +58,7 @@ public class Deal {
                 river();
                 break;
             case RIVER:
-                clear();
+                clearDeck();
                 break;
         }
     }
@@ -67,16 +71,21 @@ public class Deal {
     }
 
     private void dealHands() {
-        for (int i=0; i<2; i++) {
-            for (int j=0; j<numberOfPlayers; j++) {
-                holeCards[j][i] = deck.removeCard();
+        for (int i=0; i<numberOfPlayers; i++) {
+            newPlayer = new HumanPlayer();
+            for (int j=0; j < 2; j++) {
+                String cardPosition;
+                cardPosition = "Hole Card #" + (j +1);
+                newPlayer.playersHoleCards.put(cardPosition,deck.removeCard());
             }
+            playersInGame.add(newPlayer);
         }
     }
 
     private void flop() {
         for (int i=0; i<3; i++) {
             communityCards[i] = deck.removeCard();
+            logger.debug(communityCards[i].getCardRank().getSymbol());
         }
         stateOfHand = StateOfHand.FLOP;
     }
@@ -91,19 +100,18 @@ public class Deal {
         stateOfHand = StateOfHand.RIVER;
     }
 
-    public void clear() {
-        for (int i=0; i<getNumberOfPlayers(); i++) {
-            Arrays.fill(holeCards[i], null);// maybe remove for loop
-        }
-
+    public void clearDeck() {
+        playersInGame.clear();
         Arrays.fill(communityCards, null);
-
         stateOfHand = StateOfHand.CLEAR;
-        scored = false;
+        //scored = false;
     }
 
     @Override
     public String toString() {
+        Card card1;
+        Card card2;
+        int b = 0;
 
         String str="";
         for (int i=0; i<5; i++) {
@@ -114,22 +122,27 @@ public class Deal {
         String NL = System.getProperty("line.separator");
         str += NL;
 
-        for (int i=0; i<numberOfPlayers; i++) {
-            if (holeCards[i][0]!=null) {
-                str += (i+1) + ": " + holeCards[i][0].toString() + ' ';
-                str += holeCards[i][1].toString() + "  ";
-            }
+        for (HumanPlayer eachPlayer:playersInGame) {
+                card1 = eachPlayer.playersHoleCards.get("Hole Card #1");
+                card2 = eachPlayer.playersHoleCards.get("Hole Card #2");
+                str += "Player " + (b+1) + ": " + card1 + ' ';
+                str += card2 + "  ";
+            b++;
         }
-
         return str;
     }
 
-    public void setNumberOfPlayers(int hands) {
-        this.numberOfPlayers = hands;
-        holeCards = new Card[getNumberOfPlayers()][2];
+    public void setNumberOfPlayers(int players) {
+
+        //logger.debug(HumanPlayer.playersHoleCards);
+        this.numberOfPlayers = players;
+        for(int i=0; i<players;i++){
+
+        }
     }
 
     public boolean isCompleted() {
+
         return stateOfHand == StateOfHand.RIVER;
     }
 
@@ -140,15 +153,18 @@ public class Deal {
     private HashMap<Rank, Boolean> scoreToTiedMap = new HashMap<>();
 
     public void scoreHands() {
+        int p = 0;
         scoreList.clear();
         Evaluator evaluator = new Evaluator();
-        for (int i=0; i<getNumberOfPlayers(); i++) {
-
-            Card [] cards = getCombinedCards(i);
+        for(HumanPlayer eachPlayer: playersInGame) {
+        //for (int i=0; i<getNumberOfPlayers(); i++) {
+            //List<Card> cards = getCombinedCards(eachPlayer);
+            Card [] cards = getCombinedCards(eachPlayer);
             Rank score = evaluator.evaluate(cards);
             scoreList.add( score );
-            handToScoreMap.put(i, score);
-            scoreToHandMap.put(score, i);
+            handToScoreMap.put(p, score);
+            scoreToHandMap.put(score, p);
+            p++;
         }
 
         // sort the scores
@@ -194,18 +210,22 @@ public class Deal {
             scoreToTiedMap.put(score, equalPrevious || equalNext);
         }
 
-        scored = true;
+        //scored = true;
 
         //setChanged();
     }
 
-    private Card [] getCombinedCards(int hand) {
+    private Card [] getCombinedCards(HumanPlayer player) {
+        int q = 0;
         Card [] cards = new Card[7];
         for (int j=0; j<5; j++) {
             cards[j] = getCommunityCards()[j];
         }
-        for (int j=0; j<2; j++) {
-            cards[5+j] = getHoleCards()[hand][j];
+        for (String key: player.playersHoleCards.keySet()) {
+        //for (int j=0; j<2; j++) {
+            cards[5+q] = player.playersHoleCards.get(key);
+                    //getHoleCards()[hand][j];
+            q++;
         }
         return cards;
     }
@@ -223,14 +243,6 @@ public class Deal {
 
     public int getNumberOfPlayers() {
         return numberOfPlayers;
-    }
-
-    public Card[][] getHoleCards() {
-        return holeCards;
-    }
-
-    public void setHoleCards(Card[][] holeCards) {
-        this.holeCards = holeCards;
     }
 
     public Card[] getCommunityCards() {
@@ -266,9 +278,9 @@ public class Deal {
         return scoreToTiedMap.get(score);
     }
 
-    public boolean isScored() {
-        return scored;
-    }
+    //public boolean isScored() {
+        //return scored;
+    //}
 
     /////////////////////////////////////////////////
     // test
@@ -280,12 +292,14 @@ public class Deal {
         while (!dealer.isCompleted())
             dealer.deal();
 
+        //System.out.println(playersInGame);
         System.out.println(dealer.toString());
 
         // evaluate and rank each hand
         dealer.scoreHands();
 
         ArrayList<Rank> scoreList = dealer.getScoreList();
+
 
         for (int i=0; i<dealer.getNumberOfPlayers(); i++) {
 
@@ -295,9 +309,8 @@ public class Deal {
             int rank = dealer.getRankByScore(score);
             boolean isTied = dealer.isTied(score);
 
-            System.out.println("rank: " + rank + ", hand: " + (hand+1) +
+            System.out.println("rank: " + rank + ", player: " + (hand+1) +
                     ", score: " + score.toString() + ( isTied? " (tied)" : "") );
         }
-
     }
 }

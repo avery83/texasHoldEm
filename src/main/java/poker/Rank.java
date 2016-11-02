@@ -72,9 +72,9 @@ public class Rank implements Comparable<Rank>  {
 
     private int compareHighCards(Rank rank) {
         for (int i=0; i<highCards.size(); i++) {
-            if ( highCards.get(i).getRank().getCardValue() < rank.highCards.get(i).getRank().getCardValue() )
+            if ( highCards.get(i).getCardRank().getCardValue() < rank.highCards.get(i).getCardRank().getCardValue() )
                 return -1;
-            else if ( highCards.get(i).getRank().getCardValue() > rank.highCards.get(i).getRank().getCardValue() )
+            else if ( highCards.get(i).getCardRank().getCardValue() > rank.highCards.get(i).getCardRank().getCardValue() )
                 return 0xffff;
         }
         return 0;

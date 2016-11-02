@@ -2,7 +2,8 @@ package poker;
 
 public class Card implements Comparable<Card>{
 
-    public static final int TOTAL_CARDS = 52;
+    //public static final int TOTAL_CARDS = 52;
+
 
     public enum Suit {
         CLUB(0, 'C'),
@@ -20,15 +21,18 @@ public class Card implements Comparable<Card>{
             this.symbol = symbol;
         }
 
-        public int getIntValue() {
+        public int getCardValue() {
+
             return cardValue;
         }
 
         public Character getSymbol() {
+
             return symbol;
         }
 
         static public Suit getSuit(int suit) {
+
             return cardsSuits[suit];
         }
     }
@@ -68,7 +72,8 @@ public class Card implements Comparable<Card>{
                 EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE};
 
         // both 1 and 14 are recognized as ACE
-        public static CardRank getRank(int cardValue) {
+        public static CardRank getCardRank(int cardValue) {
+
             return cardRanks[cardValue];
         }
     }
@@ -78,9 +83,10 @@ public class Card implements Comparable<Card>{
 
 
     public Card(int cardValue) {
-        rank = CardRank.getRank( cardValue%13 + 1 );
+        rank = CardRank.getCardRank( cardValue%13 + 1 );
         suit = Suit.getSuit( cardValue/13 );
     }
+
 
     @Override
     public String toString() {
@@ -108,7 +114,7 @@ public class Card implements Comparable<Card>{
     ////////////////////////////
     // getters and setters
 
-    public CardRank getRank() {
+    public CardRank getCardRank() {
         return rank;
     }
 

@@ -2,41 +2,52 @@ package poker;
 
 import java.util.*;
 import org.apache.log4j.Logger;
+import java.io.*;
 
 public class Deck {
 
     static Logger logger = Logger.getLogger(Deck.class);
     private List<Card> cards = new ArrayList<>();
+    private Properties properties;
 
     //Fill Deck with 52 cards
     public Deck() {
-        clear();
-        fillDeck();
+        logger.debug("I'm in Deck");
+        //Clear all cards from the deck
+        cards.clear();
+        logger.debug("Cards are cleared");
+        loadProperties();
+        //fillDeck();
+
+    }
+
+    public void loadProperties() {
+        properties = new Properties();
+        try {
+            properties.load(this.getClass().getResourceAsStream("/deck.properties"));
+        }
+        catch(IOException ioe) {
+            System.out.println("Can't load the properties file");
+            ioe.printStackTrace();
+        }
+        catch(Exception e) {
+            System.out.println("Problem: " + e);
+            e.printStackTrace();
+        }
+        fillDeck(properties);
     }
 
     public List<Card> getCards() {
         return cards;
     }
 
-    private void fillDeck() {
-        clear();
-        for (int i=0; i<Card.TOTAL_CARDS; i++) {
-            addCard(new Card(i));
+    private void fillDeck(Properties properties) {
+        //cards.clear();
+        for (int i=0; i<Integer.valueOf(properties.getProperty("deck.size")); i++) {
+            cards.add(new Card(i));
         }
         logger.debug("cards: " + toString());
     }
-
-
-     //clear all cards from the deck
-    public void clear() {
-        cards.clear();
-    }
-
-
-    public void addCard(Card card) {
-        cards.add(card);
-    }
-
 
     public Card removeCard() {
         return cards.remove(cards.size()-1);
