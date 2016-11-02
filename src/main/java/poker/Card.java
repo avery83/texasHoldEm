@@ -111,8 +111,6 @@ public class Card implements Comparable<Card>{
             return false;
     }
 
-    ////////////////////////////
-    // getters and setters
 
     public CardRank getCardRank() {
         return rank;

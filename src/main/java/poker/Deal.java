@@ -16,10 +16,7 @@ public class Deal {
     private StateOfHand stateOfHand;
     private HumanPlayer newPlayer;
 
-    /**
-     * The state of the dealer.
-     * When in RIVER, the card dealing process is complete.
-     */
+    
     enum StateOfHand {
         CLEAR,
         PREFLOP,
@@ -31,7 +28,6 @@ public class Deal {
     //private boolean scored = false;
 
     public Deal() {
-        // default deck
         logger.debug("Trace Message!");
         stateOfHand = StateOfHand.CLEAR;
         deck = new Deck();
@@ -39,9 +35,7 @@ public class Deal {
         setNumberOfPlayers(4);
     }
 
-    /**
-     * performs one step of the card dealing process
-     */
+    
     public void deal() {
         logger.debug("This is where I left off");
         switch (stateOfHand) {
@@ -230,9 +224,6 @@ public class Deal {
         return cards;
     }
 
-    ////////////////////////////////
-    // getters and setters
-
     public Deck getDeck() {
         return deck;
     }
@@ -257,7 +248,6 @@ public class Deal {
         return stateOfHand;
     }
 
-    // scoreList is sorted according to natural order
     public ArrayList<Rank> getScoreList() {
         return scoreList;
     }
@@ -281,9 +271,6 @@ public class Deal {
     //public boolean isScored() {
         //return scored;
     //}
-
-    /////////////////////////////////////////////////
-    // test
 
     public static void main(String[] args) {
 

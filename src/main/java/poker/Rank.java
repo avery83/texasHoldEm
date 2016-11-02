@@ -80,8 +80,6 @@ public class Rank implements Comparable<Rank>  {
         return 0;
     }
 
-    /////////////////////////////
-    // getters and setters
 
     public Ranking getRanking() {
         return ranking;
@@ -91,10 +89,6 @@ public class Rank implements Comparable<Rank>  {
         this.ranking = ranking;
     }
 
-    /**
-     *  get organized highest pattern cards.
-     *  the order of cards shall be from high to low
-     */
     public ArrayList<Card> getHighCards() {
         return highCards;
     }
