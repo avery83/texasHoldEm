@@ -20,31 +20,19 @@ public class Rank implements Comparable<Rank>  {
         private int rankValue;
         private String rankString;
 
-        static private final Ranking [] handRanks = { HIGH_CARD, PAIR, TWO_PAIR, THREE_OF_A_KIND,
-                STRAIGHT, FLUSH, FULL_HOUSE, FOUR_OF_A_KIND, STRAIGHT_FLUSH, ROYAL_FLUSH };
 
         Ranking(int rankValue, String rankString) {
             this.rankValue = rankValue;
             this.rankString = rankString;
         }
 
-        public int getIntValue() {
-            return rankValue;
-        }
-
         @Override
         public String toString() {
             return rankString;
         }
-
-        static public Ranking getRanking(int rankValue) {
-            return handRanks[rankValue];
-        }
-
     }
 
     private Ranking ranking = Ranking.HIGH_CARD;
-
     private ArrayList<Card> highCards = new ArrayList<>();
 
     @Override
@@ -52,6 +40,7 @@ public class Rank implements Comparable<Rank>  {
         return ranking.toString() + ", " + highCards.toString();
     }
 
+    //Compare ranks
     @Override
     public int compareTo(Rank rankToCompare) {
         int rankValue = ranking.compareTo(rankToCompare.ranking);
@@ -75,25 +64,17 @@ public class Rank implements Comparable<Rank>  {
             if ( highCards.get(i).getCardRank().getCardValue() < rank.highCards.get(i).getCardRank().getCardValue() )
                 return -1;
             else if ( highCards.get(i).getCardRank().getCardValue() > rank.highCards.get(i).getCardRank().getCardValue() )
-                return 0xffff;
+                return 1;
         }
         return 0;
-    }
-
-
-    public Ranking getRanking() {
-        return ranking;
     }
 
     public void setRanking(Ranking ranking) {
         this.ranking = ranking;
     }
 
+
     public ArrayList<Card> getHighCards() {
         return highCards;
-    }
-
-    public void setHighCards(ArrayList<Card> highCards) {
-        this.highCards = highCards;
     }
 }

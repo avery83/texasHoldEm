@@ -2,7 +2,6 @@ package poker;
 
 public class Card implements Comparable<Card>{
 
-    //public static final int TOTAL_CARDS = 52;
 
 
     public enum Suit {

@@ -7,18 +7,23 @@ import java.io.*;
 public class Deck {
 
     static Logger logger = Logger.getLogger(Deck.class);
-    private List<Card> cards = new ArrayList<>();
+    private static List<Card> cards = new ArrayList<>();
+    private HashMap<Card,String> mapOfCardImages;
     private Properties properties;
 
     //Fill Deck with 52 cards
     public Deck() {
         logger.debug("I'm in Deck");
+
         //Clear all cards from the deck
         cards.clear();
         logger.debug("Cards are cleared");
         loadProperties();
         //fillDeck();
 
+    }
+    public HashMap<Card, String> getMapOfCardImages() {
+        return mapOfCardImages;
     }
 
     public void loadProperties() {
@@ -37,9 +42,11 @@ public class Deck {
         fillDeck(properties);
     }
 
-    public List<Card> getCards() {
+    public static List<Card> getCards() {
         return cards;
     }
+
+
 
     private void fillDeck(Properties properties) {
         //cards.clear();
@@ -47,6 +54,15 @@ public class Deck {
             cards.add(new Card(i));
         }
         logger.debug("cards: " + toString());
+        fillMap();
+    }
+    private void fillMap() {
+        mapOfCardImages = new HashMap<>();
+        int i = 1;
+        for(Card eachCard: cards) {
+            mapOfCardImages.put(eachCard, "Card" + i + ".gif");
+            i++;
+        }
     }
 
     public Card removeCard() {
