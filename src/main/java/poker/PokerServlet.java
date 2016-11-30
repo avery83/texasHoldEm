@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import poker.Deal.*;
+import poker.Entity.Game;
+import poker.persistence.UserDao;
+import poker.persistence.AbstractDao;
+
 import java.util.*;
 
 
@@ -19,17 +23,29 @@ import java.util.*;
 )
 
 public class PokerServlet extends HttpServlet {
+
     private final Logger logger = Logger.getLogger(PokerServlet.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         //int numberOfPlayers = Integer.parseInt(request.getParameter("numberOfPlayers"));
+        UserDao dao = new UserDao();
+        AbstractDao<Game> dao2 = new AbstractDao(Game.class);
+        int id = (Integer) request.getAttribute("gameId");
 
-        Deal dealer = new Deal();
+        //int newGame;
+        //newGame = dao2.get(5).getId();
+        logger.debug(dao2.get(id).getStartingChips());
 
-        while (dealer.getStateOfHand() != StateOfHand.RIVER)
+        //newGame.setUserName(request.getAttribute());
+        //newGame.setNumberOfPlayers(4);
+        //newGame.setStartingChips(1000.00);
+        Deal dealer = new Deal(id);
+
+        while (dealer.getStateOfHand() != StateOfHand.RIVER) {
             dealer.deal();
+        }
 
         //System.out.println(playersInGame);
         System.out.println(dealer.toString());
@@ -77,10 +93,11 @@ public class PokerServlet extends HttpServlet {
         //logger.debug(newString);
         request.setAttribute("myDeal", dealer);
         request.setAttribute("CommunityCards", dealer.getCommunityCards().toString());
-        String url = "/index.jsp";
+        String url = "/playGame.jsp";
 
         RequestDispatcher dispatcher
                 = getServletContext().getRequestDispatcher(url);
         dispatcher.forward(request, response);
     }
+
 }

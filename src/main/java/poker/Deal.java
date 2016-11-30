@@ -1,5 +1,10 @@
 package poker;
+
+import poker.Entity.Game;
+import poker.Entity.Users;
 import org.apache.log4j.*;
+import poker.persistence.AbstractDao;
+
 import java.util.*;
 
 public class Deal {
@@ -8,12 +13,18 @@ public class Deal {
     private Deck deck;
     private int numberOfPlayers;
     private List<HumanPlayer> playersInGame;
-
-
-
     private List<Card> communityCards = new ArrayList<>(5);
     private StateOfHand stateOfHand;
     private HumanPlayer newPlayer;
+    private List<Rank> scoreList;
+    private HashMap<Rank, HumanPlayer> scoreToPlayerMap;
+    private HashMap<Rank, Integer> scoreToRankMap;
+    private double pot;
+    private Action action;
+    private Game currentGame;
+    private double smallBlind;
+    private double bigBlind;
+
 
 
     enum StateOfHand {
@@ -25,23 +36,33 @@ public class Deal {
     }
 
 
-    public Deal() {
+    public Deal(int id) {
+        AbstractDao<Game> dao2 = new AbstractDao(Game.class);
+        currentGame = dao2.get(id);
 
+        bigBlind = currentGame.getStartingChips() / 20;
+        smallBlind = bigBlind / 2;
+        logger.debug(bigBlind);
+        //currentGame = newGame;
         logger.debug("New Deal");
         stateOfHand = StateOfHand.CLEAR;
         deck = new Deck();
         playersInGame = new ArrayList<>();
-        setNumberOfPlayers(4);
+        action = new Action(this);
+
+        //setNumberOfPlayers(4);
     }
 
 
     public void deal() {
         switch (stateOfHand) {
             case CLEAR:
+                //players bet
                 newDeal();
                 break;
             case PREFLOP:
                 flop();
+                //players bet
                 break;
             case FLOP:
                 turn();
@@ -55,19 +76,26 @@ public class Deal {
         }
     }
 
+
+
     private void newDeal() {
         //Shuffle deck three times
         Collections.shuffle(deck.getCards());
         Collections.shuffle(deck.getCards());
         Collections.shuffle(deck.getCards());
         logger.debug("shuffle: " + deck.toString());
+        pot = 0.00;
         dealHands();
+        //players bet
         //set state of hand to preflop
         stateOfHand = StateOfHand.PREFLOP;
     }
 
     private void dealHands() {
-        for (int i=0; i<numberOfPlayers; i++) {
+
+
+        for (int i=0; i< 4; i++) {
+
             newPlayer = new HumanPlayer();
             newPlayer.setPlayerName("Player: " + (i+1));
             for (int j=0; j < 2; j++) {
@@ -75,6 +103,8 @@ public class Deal {
                 cardPosition = "Hole Card #" + (j +1);
                 newPlayer.playersHoleCards.put(cardPosition,deck.removeCard());
             }
+            getAction().move();
+            //newplayer.move
             playersInGame.add(newPlayer);//stay here
         }
     }
@@ -83,16 +113,25 @@ public class Deal {
         for (int i=0; i<3; i++) {
             communityCards.add(deck.removeCard());
         }
+        for(HumanPlayer player: playersInGame) {
+            getAction().move();
+        }
         stateOfHand = StateOfHand.FLOP;
     }
 
     private void turn() {
         communityCards.add(deck.removeCard());
+        for(HumanPlayer player: playersInGame) {
+            getAction().move();
+        }
         stateOfHand = StateOfHand.TURN;
     }
 
     private void river() {
         communityCards.add(deck.removeCard());
+        for(HumanPlayer player: playersInGame) {
+            getAction().move();
+        }
         stateOfHand = StateOfHand.RIVER;
     }
 
@@ -136,31 +175,39 @@ public class Deal {
         }
     }
 
-    private List<Rank> scoreList = new ArrayList<>();
-    private HashMap<HumanPlayer, Rank> playerToScoreMap = new HashMap<>();
-    private HashMap<Rank, HumanPlayer> scoreToPlayerMap = new HashMap<>();
-    private HashMap<Rank, Integer> scoreToRankMap = new HashMap<>();
+
+    //private HashMap<HumanPlayer, Rank> playerToScoreMap = new HashMap<>();
+
 
 
     public void scoreHands() {
+        scoreList = new ArrayList<>();
+        scoreToPlayerMap = new HashMap<>();
+        scoreToRankMap = new HashMap<>();
         getScoreList().clear();
+        addScoreToCollections();
+        // sort the scores
+        Collections.sort(getScoreList());
+
+        //Rank score;
+        //for (int i=0; i<getNumberOfPlayers(); i++) {
+            //int rank = i+1;
+            //score = scoreList.get(getNumberOfPlayers()-i-1);
+            ///scoreToRankMap.put(score, rank);
+        //}
+    }
+
+    public void addScoreToCollections() {
+        int rank = 1;
         Evaluator evaluator = new Evaluator();
-        for(HumanPlayer eachPlayer: playersInGame) {
+        for (HumanPlayer eachPlayer : playersInGame) {
             ArrayList<Card> cards = getCombinedCards(eachPlayer);
             Rank score = evaluator.evaluate(cards);
             getScoreList().add(score);
-            playerToScoreMap.put(eachPlayer, score);
+            //playerToScoreMap.put(eachPlayer, score);
             scoreToPlayerMap.put(score, eachPlayer);
-        }
-
-        // sort the scores
-        Collections.sort(scoreList);
-
-        Rank score;
-        for (int i=0; i<getNumberOfPlayers(); i++) {
-            int rank = i+1;
-            score = scoreList.get(getNumberOfPlayers()-i-1);
             scoreToRankMap.put(score, rank);
+            rank++;
         }
     }
 
@@ -217,5 +264,20 @@ public class Deal {
 
     public int getRankByScore(Rank score) {
         return scoreToRankMap.get(score);
+    }
+
+    public double getPot() {
+        return pot;
+    }
+
+    public void setPot(double pot) {
+        this.pot = pot;
+    }
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
     }
 }

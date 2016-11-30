@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Rank implements Comparable<Rank>  {
 
-    public enum Ranking {
+    public enum Score {
 
         HIGH_CARD(0, "high card"),
         PAIR(1, "pair"),
@@ -21,7 +21,7 @@ public class Rank implements Comparable<Rank>  {
         private String rankString;
 
 
-        Ranking(int rankValue, String rankString) {
+        Score(int rankValue, String rankString) {
             this.rankValue = rankValue;
             this.rankString = rankString;
         }
@@ -32,18 +32,18 @@ public class Rank implements Comparable<Rank>  {
         }
     }
 
-    private Ranking ranking = Ranking.HIGH_CARD;
+    public Score score = Score.HIGH_CARD;
     private ArrayList<Card> highCards = new ArrayList<>();
 
     @Override
     public String toString() {
-        return ranking.toString() + ", " + highCards.toString();
+        return score.toString() + ", " + highCards.toString();
     }
 
     //Compare ranks
     @Override
     public int compareTo(Rank rankToCompare) {
-        int rankValue = ranking.compareTo(rankToCompare.ranking);
+        int rankValue = score.compareTo(rankToCompare.score);
         if (rankValue != 0)
             return rankValue;
         else
@@ -53,7 +53,7 @@ public class Rank implements Comparable<Rank>  {
     @Override
     public boolean equals(Object obj) {
         Rank rank = (Rank) obj;
-        if ( ranking == rank.ranking && compareHighCards(rank)== 0 )
+        if ( score == rank.score && compareHighCards(rank)== 0 )
             return true;
         else
             return false;
@@ -69,8 +69,8 @@ public class Rank implements Comparable<Rank>  {
         return 0;
     }
 
-    public void setRanking(Ranking ranking) {
-        this.ranking = ranking;
+    public void setRanking(Score ranking) {
+        this.score = ranking;
     }
 
 

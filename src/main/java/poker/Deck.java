@@ -3,6 +3,8 @@ package poker;
 import java.util.*;
 import org.apache.log4j.Logger;
 import java.io.*;
+import poker.CardRankEnum.CardRank;
+import poker.SuitEnum.Suit;
 
 public class Deck {
 
@@ -13,14 +15,12 @@ public class Deck {
 
     //Fill Deck with 52 cards
     public Deck() {
-        logger.debug("I'm in Deck");
-
         //Clear all cards from the deck
         cards.clear();
         logger.debug("Cards are cleared");
         loadProperties();
-        //fillDeck();
-
+        fillDeck();
+        fillImageMap();
     }
     public HashMap<Card, String> getMapOfCardImages() {
         return mapOfCardImages;
@@ -39,7 +39,7 @@ public class Deck {
             System.out.println("Problem: " + e);
             e.printStackTrace();
         }
-        fillDeck(properties);
+
     }
 
     public static List<Card> getCards() {
@@ -48,15 +48,16 @@ public class Deck {
 
 
 
-    private void fillDeck(Properties properties) {
-        //cards.clear();
-        for (int i=0; i<Integer.valueOf(properties.getProperty("deck.size")); i++) {
-            cards.add(new Card(i));
+    private void fillDeck() {
+        for(Suit suit: Suit.values()) {
+            for(CardRank cardRank: CardRank.values()) {
+                cards.add(new Card(suit, cardRank));
+            }
         }
+        //cards.clear();
         logger.debug("cards: " + toString());
-        fillMap();
     }
-    private void fillMap() {
+    private void fillImageMap() {
         mapOfCardImages = new HashMap<>();
         int i = 1;
         for(Card eachCard: cards) {

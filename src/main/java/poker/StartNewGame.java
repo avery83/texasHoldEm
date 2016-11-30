@@ -2,14 +2,20 @@ package poker;
 
 import java.util.ArrayList;
 import poker.Deal.*;
+import poker.Entity.Game;
+
 import java.util.*;
 
 /**
  * Created by student on 11/3/16.
  */
 public class StartNewGame {
-    public static void main(String[] args) {
 /*
+    public static void main(String[] args) {
+        Game newGame = new Game();
+        newGame.setUserName("Ashley");
+        newGame.setNumberOfPlayers(4);
+        newGame.setStartingChips(1000.00);
         Deal dealer = new Deal();
 
         while (dealer.getStateOfHand() != StateOfHand.RIVER) {
@@ -20,7 +26,7 @@ public class StartNewGame {
 
         // evaluate and rank each hand
         dealer.scoreHands();
-        ArrayList<Rank> scoreList = dealer.getScoreList();
+        List<Rank> scoreList = dealer.getScoreList();
         Comparator cmp = Collections.reverseOrder();
         Collections.sort(scoreList, cmp);
         String winner = "";
@@ -37,6 +43,7 @@ public class StartNewGame {
             i++;
         }
         System.out.println("Winner: " + winner);
-        */
+
     }
+*/
 }
