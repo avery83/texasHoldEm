@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import poker.ScoreEnum.Score;
 
 import static org.junit.Assert.*;
 
@@ -70,7 +71,7 @@ public class EvaluatorTest {
 
     @Test
     public void testEvaluate() throws Exception {
-        assertEquals(Rank.Score.THREE_OF_A_KIND,eval.evaluate(cards4).score);
+        assertEquals(Score.THREE_OF_A_KIND,eval.evaluate(cards4).score);
     }
 
     @Test

@@ -16,21 +16,11 @@ public class UserDaoTest {
     @Test
     public void testGetAllUsers() throws Exception {
         UserDao dao = new UserDao();
-        //List<Users> users = new ArrayList<>();
-        //String insertedUserName = "";
-        //create user to add
-        int currentSize = dao.getAllUsers().size();
-        Users user = new Users();
-        user.setUserName("Joeys");
-        user.setGamesPlayed(3);
-        user.setGamesWon(2);
-        user.setTotalWinnings(12000.00);
-        user.setPassword("secr");
-        dao.addUser(user);
+
         //List<Users> users = new ArrayList<Users>();
         //users.addAll(dao.getAllUsers());
         assertTrue(dao.getAllUsers().size() > 0);
-        dao.deleteUser(user);
+
     }
 
     @Test

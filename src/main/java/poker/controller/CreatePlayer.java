@@ -38,11 +38,13 @@ public class CreatePlayer extends HttpServlet {
         log.debug("Adding User: " + user);
         UserDao dao = new UserDao();
         dao.addUser(user);
-
+        String name = user.getUserName();
+        req.setAttribute("name", name);
         String url = "/setupGame.jsp";
 
-        resp.sendRedirect(url);
-        return;
+        RequestDispatcher dispatcher
+                = getServletContext().getRequestDispatcher(url);
+        dispatcher.forward(req, resp);
     }
     }
 

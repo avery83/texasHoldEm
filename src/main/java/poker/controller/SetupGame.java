@@ -16,10 +16,10 @@ import poker.persistence.UserDao;
 /**
  * Created by student on 11/29/16.
  */
-@WebServlet(name = "CreateGame", urlPatterns = { "/createGame" } )
+@WebServlet(name = "SetupGame", urlPatterns = { "/setupGame" } )
 
 
-public class CreateGame extends HttpServlet {
+public class SetupGame extends HttpServlet {
 
     private final Logger log = Logger.getLogger(this.getClass());
 
@@ -27,23 +27,11 @@ public class CreateGame extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Game game = new Game();
-        game.setNumberOfPlayers(Integer.parseInt(req.getParameter("numberOfPlayers")));
-        game.setStartingChips(Double.parseDouble(req.getParameter("startingChips")));
-        game.setUserName(req.getParameter("name"));
 
+        String name = (String) req.getAttribute("name");
+        log.debug(name);
 
-
-        //log.debug("Adding Game: " + game.getId());
-
-        AbstractDao dao = DaoFactory.createDao(Game.class);
-
-        dao.create(game);
-        log.debug(game.getId());
-        req.setAttribute("gameId", game.getId());
-        log.debug("Sending back the game...");
-
-        String url = "/pokerServlet";
+        String url = "/setupGame.jsp";
 
         RequestDispatcher dispatcher
                 = getServletContext().getRequestDispatcher(url);

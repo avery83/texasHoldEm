@@ -2,6 +2,7 @@ package poker.Entity;
 
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.descriptor.sql.TinyIntTypeDescriptor;
+import java.util.*;
 
 import javax.persistence.*;
 /**
@@ -72,10 +73,17 @@ public class Game {
         this.won = won;
     }
 
+
+
     private String userName;
+
+
 
     @Basic
     @javax.persistence.Column(name = "user_name", nullable = true, length = 15)
+
+
+
     public String getUserName() {
         return userName;
     }

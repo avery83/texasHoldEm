@@ -4,6 +4,7 @@ import poker.Entity.Game;
 import poker.Entity.Users;
 import org.apache.log4j.*;
 import poker.persistence.AbstractDao;
+import poker.persistence.UserDao;
 
 import java.util.*;
 
@@ -24,8 +25,27 @@ public class Deal {
     private Game currentGame;
     private double smallBlind;
     private double bigBlind;
+    private int handsPlayed;
+    private Users currentUser;
+    private double startingChips;
 
+    public double getStartingChips() {
+        return startingChips;
+    }
 
+    public void setStartingChips(double startingChips) {
+        this.startingChips = startingChips;
+    }
+
+    private double bet;
+
+    public int getHandsPlayed() {
+        return handsPlayed;
+    }
+
+    public void setHandsPlayed(int handsPlayed) {
+        this.handsPlayed = handsPlayed;
+    }
 
     enum StateOfHand {
         CLEAR,
@@ -36,19 +56,25 @@ public class Deal {
     }
 
 
-    public Deal(int id) {
+    public Deal(int id, String userName) {
         AbstractDao<Game> dao2 = new AbstractDao(Game.class);
+        UserDao dao = new UserDao();
+
+        currentUser = dao.getUser(userName);
         currentGame = dao2.get(id);
+        numberOfPlayers = currentGame.getNumberOfPlayers();
+        this.setStartingChips(currentGame.getStartingChips());
 
         bigBlind = currentGame.getStartingChips() / 20;
         smallBlind = bigBlind / 2;
+        handsPlayed=0;
+        bet = 0.00;
         logger.debug(bigBlind);
         //currentGame = newGame;
         logger.debug("New Deal");
         stateOfHand = StateOfHand.CLEAR;
         deck = new Deck();
         playersInGame = new ArrayList<>();
-        action = new Action(this);
 
         //setNumberOfPlayers(4);
     }
@@ -93,20 +119,40 @@ public class Deal {
 
     private void dealHands() {
 
+        newPlayer = new HumanPlayer();
+        newPlayer.setPlayerName(currentUser.getUserName());
+        newPlayer.setPlayersStartingChips(startingChips);
+        playersInGame.add(newPlayer);
 
-        for (int i=0; i< 4; i++) {
+        for (int i=1; i< numberOfPlayers; i++) {
 
             newPlayer = new HumanPlayer();
-            newPlayer.setPlayerName("Player: " + (i+1));
+            newPlayer.setPlayerName("player" + (i + 1));
+            playersInGame.add(newPlayer);
+        }
+        //logger.debug(playersInGame.toString());
+        for (HumanPlayer eachPlayer: playersInGame) {
             for (int j=0; j < 2; j++) {
                 String cardPosition;
                 cardPosition = "Hole Card #" + (j +1);
-                newPlayer.playersHoleCards.put(cardPosition,deck.removeCard());
+                eachPlayer.playersHoleCards.put(cardPosition,deck.removeCard());
             }
-            getAction().move();
-            //newplayer.move
-            playersInGame.add(newPlayer);//stay here
         }
+        //create it's own method
+        bet = bigBlind;
+        for (int i = 1; i < playersInGame.size();i++)
+        for (HumanPlayer player: playersInGame) {
+            logger.debug(player.getPlayerName());
+            logger.debug(startingChips);
+            logger.debug(player.getPlayersStartingChips());
+            playersInGame.get(0).setPlayersStartingChips(startingChips);
+            //player.setPlayersStartingChips(startingChips);
+            Action action = new Action(this, player);
+            action.move(bet);
+        }
+
+        //create it's own method
+
     }
 
     private void flop() {
@@ -114,7 +160,8 @@ public class Deal {
             communityCards.add(deck.removeCard());
         }
         for(HumanPlayer player: playersInGame) {
-            getAction().move();
+            Action action = new Action(this, player);
+            action.move(bet);
         }
         stateOfHand = StateOfHand.FLOP;
     }
@@ -122,7 +169,8 @@ public class Deal {
     private void turn() {
         communityCards.add(deck.removeCard());
         for(HumanPlayer player: playersInGame) {
-            getAction().move();
+            Action action = new Action(this, player);
+            action.move(bet);
         }
         stateOfHand = StateOfHand.TURN;
     }
@@ -130,7 +178,8 @@ public class Deal {
     private void river() {
         communityCards.add(deck.removeCard());
         for(HumanPlayer player: playersInGame) {
-            getAction().move();
+            Action action = new Action(this, player);
+            action.move(bet);
         }
         stateOfHand = StateOfHand.RIVER;
     }

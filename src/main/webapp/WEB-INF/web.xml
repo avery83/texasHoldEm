@@ -46,6 +46,9 @@
     </form-login-config>
   </login-config>
 
+    <welcome-file-list>
+        <welcome-file>/setupGame.jsp</welcome-file>
+    </welcome-file-list>
 
 
 

@@ -1,6 +1,7 @@
 package poker.Entity;
 
 import javax.persistence.*;
+import java.util.*;
 
 /**
  * Created by student on 11/28/16.
@@ -24,10 +25,14 @@ public class Users {
         this.gamesWon = gamesWon;
         this.totalWinnings = totalWinnings;
         this.password = password;
+
     }
 
     @Id
     @Column(name = "user_name", nullable = false, length =15)
+
+
+
     public String getUserName() {
         return userName;
     }

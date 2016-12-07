@@ -5,6 +5,8 @@
   Time: 5:04 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -20,8 +22,11 @@
     <title>Game Setup</title>
 </head>
 <body>
+<div class="container-fluid" style="text-align: center;">
+    <h1 style="text-align: center; color:lightcoral;">Hi <span id="name" style="color:lightblue;">${name}</span>, Lets Play Some Poker!</h1>
+</div>
 <div class="container-fluid">
-    <h1>Set up your game</h1>
+    <h3>Set up your game</h3>
 </div>
 <div>
     <form id="signUpForm" role="form" data-toggle="validator" class="form-horizontal"
@@ -51,9 +56,10 @@
 
 
         </div>
+        <input type="hidden" name="name" value="${name}">
 
         <button type="submit" class="btn btn-default col-sm-offset-3"
-                data-disable="true">Submit
+                data-disable="true">Play
         </button>
         <button type="reset" class="btn btn-default">Clear</button>
 
