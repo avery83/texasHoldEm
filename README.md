@@ -20,6 +20,6 @@ I spent too much time researching technologies I never implemented.
 I tried to get betting incorporated into the game but fell short.
 
 ## Credit:
-I used this persons project as a framework for for my class structure and I used their card images.
+I used this persons project as a starting point for for my class structure and I used their card images.
 (https://sourceforge.net/projects/jokera/)
 
