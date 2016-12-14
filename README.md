@@ -1,4 +1,4 @@
-# texasHoldEm
+# Jason Avery Individual Project
 ---
 ## Problem Statement:
 I had a hard time coming up with an idea but I eventually decided that I wanted to make some type of game. I used to play a ton of Texas Hold'em way back when it was cool, and legal to play online, so I thought I would try to develop a game that I know a lot about already.
@@ -6,4 +6,20 @@ I figured the application would have a user log in and choose the settings for t
 
 ---
 ## Design
+* [Log in](WireFrames/Login.png)
+* [Settings](WireFrames/Settings.png)
+* [Create new player](WireFrames/Create New Player.png)
+* [Game Presentation](WireFrames/Game Presentation.png)
+* [Results](WireFrames/Results.png)
+
+## Development Journal
+* [Journal](Journal.md)
+
+## Setbacks
+I spent too much time researching technologies I never implemented.
+I tried to get betting incorporated into the game but fell short.
+
+## Credit:
+I used this persons project as a framework for for my class structure and I used their card images.
+(https://sourceforge.net/projects/jokera/)
 
