@@ -12,8 +12,8 @@ I figured the application would have a user log in and choose the settings for t
 * [Game Presentation](WireFrames/Game Presentation.png)
 * [Results](WireFrames/Results.png)
 
-## Development Journal
-* [Journal](Journal.md)
+## Development Log
+* [Time-Log](TimeLog.md)
 
 ## Setbacks
 I spent too much time researching technologies I never implemented.
