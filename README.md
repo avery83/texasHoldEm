@@ -16,7 +16,7 @@ I figured the application would have a user log in and choose the settings for t
 * [Time-Log](TimeLog.md)
 
 ## Testing
-* [Test screen shot](TimeLog.md)
+* [Test screen shot](Screenshot from 2016-12-14 18-05-49.png)
 
 ## Setbacks
 I spent too much time researching technologies I never implemented.
