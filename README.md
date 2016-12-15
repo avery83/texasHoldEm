@@ -15,6 +15,9 @@ I figured the application would have a user log in and choose the settings for t
 ## Development Log
 * [Time-Log](TimeLog.md)
 
+## Testing
+
+
 ## Setbacks
 I spent too much time researching technologies I never implemented.
 I tried to get betting incorporated into the game but fell short.
