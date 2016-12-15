@@ -25,6 +25,10 @@ public class UserDaoTest {
 
     @Test
     public void testUpdateUser() throws Exception {
+        UserDao dao = new UserDao();
+        Users user = dao.getUser("Heidi");
+        user.setGamesPlayed(50);
+        dao.updateUser(user);
 
     }
 
@@ -37,6 +41,9 @@ public class UserDaoTest {
 
     @Test
     public void testDeleteUser() throws Exception {
+        UserDao dao = new UserDao();
+        //Users user = dao.getUser("5");
+        //dao.deleteUser(user);
 
     }
 

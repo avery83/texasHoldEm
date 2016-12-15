@@ -14,7 +14,10 @@ import poker.persistence.AbstractDao;
 import poker.persistence.UserDao;
 
 /**
- * Created by student on 11/29/16.
+ *  This is the servlet to setup the Game
+ *
+ *@author    Jason Avery
+ *@since     Nov 18 2016
  */
 @WebServlet(name = "SetupGame", urlPatterns = { "/setupGame" } )
 
@@ -23,13 +26,23 @@ public class SetupGame extends HttpServlet {
 
     private final Logger log = Logger.getLogger(this.getClass());
 
-
+    /**
+     *  Handles HTTP POST requests.
+     *
+     *@param  req                  the HttpServletRequest object
+     *@param  resp                  the HttpServletResponse object
+     *@exception ServletException  if there is a Servlet failure
+     *@exception IOException       if there is an IO failure
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 
-        String name = (String) req.getAttribute("name");
+        String name = req.getParameter("j_username");
         log.debug(name);
+
+        String name2 = req.getRemoteUser();
+        req.setAttribute("name", name2);
 
         String url = "/setupGame.jsp";
 

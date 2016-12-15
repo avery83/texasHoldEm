@@ -12,16 +12,10 @@ import poker.Entity.*;
 import poker.persistence.UserDao;
 import poker.controller.*;
 /**
- * Created by student on 11/29/16.
- */
-
-
-
-
-
-
-/**
- * Created by paulawaite on 3/3/16.
+ *  This is the servlet to create a player
+ *
+ *@author    Jason Avery
+ *@since     Nov 18 2016
  */
 
 @WebServlet(name = "CreatePlayer", urlPatterns = { "/createPlayer" } )
@@ -30,9 +24,17 @@ import poker.controller.*;
 public class CreatePlayer extends HttpServlet {
 
     private final Logger log = Logger.getLogger(this.getClass());
-
+    /**
+     *  Handles HTTP POST requests.
+     *
+     *@param  req                   the HttpServletRequest object
+     *@param  resp                  the HttpServletResponse object
+     *@exception ServletException  if there is a Servlet failure
+     *@exception IOException       if there is an IO failure
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         Users user = new Users(req.getParameter("userName"), 0, 0, 0.00,
                 req.getParameter("password"));
         log.debug("Adding User: " + user);

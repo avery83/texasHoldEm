@@ -4,7 +4,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import poker.ScoreEnum.Score;
 import poker.CardRankEnum.CardRank;
-
+/**
+ *  This class evaluates the 7-card hand
+ *
+ *@author    Jason Avery
+ *@since     Nov 18 2016
+ */
 public class Evaluator {
 
     static Logger logger = Logger.getLogger(Evaluator.class);
@@ -16,21 +21,24 @@ public class Evaluator {
     private ArrayList<List<Card>> suits;
     private ArrayList<Card> highCards;
 
-
+    /**
+     *  Constructor to set up Evaluator object
+     */
     public Evaluator() {
         remainingCards = new ArrayList<>();
         straightCards = new ArrayList<>();
     }
 
-
-
+    /**
+     *  evaluates 7 card hand
+     *  @param  cards
+     */
     public Rank evaluate(ArrayList<Card> cards) {
 
         this.setCards(cards);
         Collections.sort(getCards());
         score = new Rank();
         highCards = score.getHighCards();
-        logger.debug(highCards);
         remainingCards.clear();
         remainingCards.addAll(this.cards);
 
@@ -44,13 +52,14 @@ public class Evaluator {
         return score;
     }
 
-    //Look for flush
+    /**
+     *  evaluates 7 card hand
+     *  @return boolean
+     */
     public boolean flush() {
 
         // arrange cards in suits
         pileCardsBySuit();
-
-
         for (List<Card> cardList : suits) {
             lastCardPosition = cardList.size() - 1;
             if (cardList.size() >= 5) {
@@ -69,7 +78,6 @@ public class Evaluator {
                     }
                 }
                 score.setRanking(Score.FLUSH);
-
                 // get five cards
                 highCards.addAll(cardList);
                 remainingCards.removeAll(highCards);
@@ -79,6 +87,9 @@ public class Evaluator {
         return false;
     }
 
+    /**
+     *  sort cards by suit
+     */
     public void pileCardsBySuit() {
         suits = new ArrayList<>();
         //Get a stream of each suit
@@ -93,7 +104,11 @@ public class Evaluator {
         suits.add(listOfSpades);
     }
 
-
+    /**
+     *  searches for a straight
+     *  @param  cardList
+     *  @return boolean
+     */
     public boolean searchStraight(List<Card> cardList) {
 
         // check for ace
@@ -105,19 +120,15 @@ public class Evaluator {
 
         int numberOfStraightCards = 0;
         Card cardToCheckAgainst = null;
-
         straightCards.clear();
-        //logger.debug(cardList);
+
         for (Card cardToCheck : cardList) {
-            //logger.debug(cardToCheck);
-            //logger.debug(cardToCheck.getCardRank().getCardValue());
-            //logger.debug(cardToCheckAgainst.getCardRank().getCardValue()-1);
             //check to see if the next card is one rank above the previous
             if (cardToCheckAgainst == null || cardToCheck.getCardRank().getCardValue() == cardToCheckAgainst.getCardRank().getCardValue() + 1 || cardToCheck.getCardRank() == CardRank.ACE && cardToCheckAgainst.getCardRank() == CardRank.TWO) {
 
                 numberOfStraightCards++;
                 straightCards.add(cardToCheck);
-                //logger.debug(straightCards);
+
                 //current card becomes card to check against
                 cardToCheckAgainst = cardToCheck;
                 //found a straight return true
@@ -139,7 +150,9 @@ public class Evaluator {
         return false;
     }
 
-    //group cards of same rank
+    /**
+     *  sorts cards by rank
+     */
     private void searchForCardsOfSameRank() {
         //stream cards by rank and collect each pile in a map---streams are awesome
         Map<CardRank, List<Card>> sameRanks = cards.stream().collect(Collectors.groupingBy(Card::getCardRank));
@@ -150,13 +163,10 @@ public class Evaluator {
         for (Map.Entry<CardRank, List<Card>> entry1 : sameRanks.entrySet()) {
             listOfPilesOfSameRank.add(entry1.getValue());
         }
-        logger.debug(listOfPilesOfSameRank);
         //sort list of lists by size
         listOfPilesOfSameRank.sort(Comparator.comparing(List::size));
         //revere order
         Collections.reverse(listOfPilesOfSameRank);
-        logger.debug(listOfPilesOfSameRank);
-
 
             //If first list in list has a size of 4 player has four of a kind
             if (listOfPilesOfSameRank.get(0).size() == 4) {

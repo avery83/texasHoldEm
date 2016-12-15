@@ -1,0 +1,158 @@
+body {
+    background-color: #3c3c3c;
+}
+h1 {
+    text-align: center;
+    color:white;
+}
+p {
+    color:white;
+}
+#middleDiv {
+    text-align: center;
+    width: 100%;
+}
+#gameDiv {
+    position: relative;
+    width:1024px;
+    height: 644px;
+    margin: 0 auto;
+}
+#myCanvas {
+    position: relative;
+    width:100%;
+    height:100%;
+}
+#potDiv {
+    position: absolute;
+    margin-top: 55%;
+    margin-left: 54%;
+    top: -37%;
+    left:-07%;
+}
+#pot {
+    color:goldenrod;
+    font-size:28px;
+    text-shadow: 1px 1px black;
+}
+#communitycards {
+    overflow: hidden;
+    margin-top:45%;
+    margin-left:39%;
+    position:absolute;
+    top: -37%;
+    left:-07%
+}
+.ccards {
+    overflow:hidden;
+    float:left;
+    padding: .5em;
+}
+.ccimage {
+    width:65px;
+    height:90px;
+}
+
+#playersDiv {
+    width:145px;
+    height: 230px;
+    margin-left:43.5%;
+    margin-top: 7%;
+    text-align:center;
+    position: absolute;
+    top: 55%;
+}
+.nameDiv {
+    height: 16px;
+    background: rgba(204, 204, 204, 0.3);
+}
+#p2 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    bottom: 3%;
+    left:22%;
+}
+#p3 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    bottom: 23%;
+    left:0%;
+}
+#p4 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    top: 23%;
+    left:0%;
+}
+#p5 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    top: 3%;
+    left:22%;
+}
+#p6 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    top: 3%;
+    left:45%;
+}
+#p7 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    top: 3%;
+    right: 22%;
+}
+#p8 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    top: 23%;
+    right:0%;
+}
+#p9 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    bottom: 23%;
+    right:0%;
+}
+#p10 {
+    width:145px;
+    height: 115px;
+    text-align:center;
+    position: absolute;
+    bottom: 3%;
+    right:22%;
+}
+.holeCards {
+    width:52px;
+    height:75px;
+}
+.cardDiv {
+    background: rgba(204, 204, 204, 0.3);
+}
+.cards {
+    padding: .5em;
+    background-color:rgba(204, 204, 204, 0.3);
+}
+h4 {
+    color:lightblue;
+    font-weight:bold;
+}
+#winningLine {
+    color:white;
+}

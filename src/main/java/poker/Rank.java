@@ -2,20 +2,28 @@ package poker;
 
 import java.util.*;
 import poker.ScoreEnum.Score;
-
+/**
+ *  This class ranks the scores and compares the highcards
+ *
+ *@author    Jason Avery
+ *@since     Nov 18 2016
+ */
 public class Rank implements Comparable<Rank>  {
-
-
 
     public Score score = Score.HIGH_CARD;
     private ArrayList<Card> highCards = new ArrayList<>();
-
+    /**
+     *  overrides toString method
+     */
     @Override
     public String toString() {
         return score.toString() + ", " + highCards.toString();
     }
 
-    //Compare ranks
+    /**
+     *  overrides compareTo methods
+     *  @param rankToCompare
+     */
     @Override
     public int compareTo(Rank rankToCompare) {
         int rankValue = score.compareTo(rankToCompare.score);
@@ -24,7 +32,10 @@ public class Rank implements Comparable<Rank>  {
         else
             return compareHighCards(rankToCompare);
     }
-
+    /**
+     *  overides equals method
+     *  @param  obj
+     */
     @Override
     public boolean equals(Object obj) {
         Rank rank = (Rank) obj;
@@ -33,7 +44,11 @@ public class Rank implements Comparable<Rank>  {
         else
             return false;
     }
-
+    /**
+     *  compares cards by rank
+     *  @param  rank
+     *  @return int
+     */
     private int compareHighCards(Rank rank) {
         for (int i=0; i<highCards.size(); i++) {
             if ( highCards.get(i).getCardRank().getCardValue() < rank.highCards.get(i).getCardRank().getCardValue() )

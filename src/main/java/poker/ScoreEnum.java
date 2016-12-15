@@ -1,9 +1,15 @@
 package poker;
 
 /**
- * Created by student on 12/7/16.
+ *  This is the enum that holds the Scores
+ *
+ *@author    Jason Avery
+ *@since     Nov 18 2016
  */
 public class ScoreEnum {
+    /**
+     *  enum class that holds the scores
+     */
     public enum Score {
 
         HIGH_CARD(0, "high card"),
@@ -19,13 +25,17 @@ public class ScoreEnum {
 
         private int rankValue;
         private String rankString;
-
-
+        /**
+         *  constructor for score enum
+         */
         Score(int rankValue, String rankString) {
             this.rankValue = rankValue;
             this.rankString = rankString;
         }
-
+        /**
+         *  overrides toString method
+         *  @return string
+         */
         @Override
         public String toString() {
             return rankString;

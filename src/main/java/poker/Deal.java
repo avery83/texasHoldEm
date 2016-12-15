@@ -7,7 +7,12 @@ import poker.persistence.AbstractDao;
 import poker.persistence.UserDao;
 
 import java.util.*;
-
+/**
+ *  This is the class that deals the cards
+ *
+ *@author    Jason Avery
+ *@since     Nov 18 2016
+ */
 public class Deal {
 
     private final Logger logger = Logger.getLogger(Deal.class.getName());
@@ -28,25 +33,15 @@ public class Deal {
     private int handsPlayed;
     private Users currentUser;
     private double startingChips;
+    Double bet;
+    Double totalBets;
+    boolean roundOfBettingCompleted;
+    List<String> listOfMoves;
+    List<HumanPlayer> playersAllIn;
 
-    public double getStartingChips() {
-        return startingChips;
-    }
-
-    public void setStartingChips(double startingChips) {
-        this.startingChips = startingChips;
-    }
-
-    private double bet;
-
-    public int getHandsPlayed() {
-        return handsPlayed;
-    }
-
-    public void setHandsPlayed(int handsPlayed) {
-        this.handsPlayed = handsPlayed;
-    }
-
+    /**
+     *  enum that declares the state of hand
+     */
     enum StateOfHand {
         CLEAR,
         PREFLOP,
@@ -55,31 +50,31 @@ public class Deal {
         RIVER
     }
 
-
+    /**
+     *  Constructor for the Deal object
+     */
     public Deal(int id, String userName) {
         AbstractDao<Game> dao2 = new AbstractDao(Game.class);
         UserDao dao = new UserDao();
-
         currentUser = dao.getUser(userName);
         currentGame = dao2.get(id);
         numberOfPlayers = currentGame.getNumberOfPlayers();
         this.setStartingChips(currentGame.getStartingChips());
-
-        bigBlind = currentGame.getStartingChips() / 20;
+        playersAllIn = new ArrayList<>();
+        this.setBigBlind(bigBlind = currentGame.getStartingChips() / 20);
         smallBlind = bigBlind / 2;
         handsPlayed=0;
         bet = 0.00;
-        logger.debug(bigBlind);
-        //currentGame = newGame;
-        logger.debug("New Deal");
+        totalBets = 0.00;
+        roundOfBettingCompleted = false;
         stateOfHand = StateOfHand.CLEAR;
         deck = new Deck();
         playersInGame = new ArrayList<>();
-
-        //setNumberOfPlayers(4);
     }
 
-
+    /**
+     *  deal method that uses switch
+     */
     public void deal() {
         switch (stateOfHand) {
             case CLEAR:
@@ -103,34 +98,33 @@ public class Deal {
     }
 
 
-
+    /**
+     *  shuffles and deals hands
+     */
     private void newDeal() {
         //Shuffle deck three times
         Collections.shuffle(deck.getCards());
         Collections.shuffle(deck.getCards());
         Collections.shuffle(deck.getCards());
-        logger.debug("shuffle: " + deck.toString());
         pot = 0.00;
         dealHands();
-        //players bet
         //set state of hand to preflop
         stateOfHand = StateOfHand.PREFLOP;
     }
-
+    /**
+     *  deals hands
+     */
     private void dealHands() {
-
         newPlayer = new HumanPlayer();
         newPlayer.setPlayerName(currentUser.getUserName());
         newPlayer.setPlayersStartingChips(startingChips);
         playersInGame.add(newPlayer);
 
         for (int i=1; i< numberOfPlayers; i++) {
-
             newPlayer = new HumanPlayer();
             newPlayer.setPlayerName("player" + (i + 1));
             playersInGame.add(newPlayer);
         }
-        //logger.debug(playersInGame.toString());
         for (HumanPlayer eachPlayer: playersInGame) {
             for (int j=0; j < 2; j++) {
                 String cardPosition;
@@ -138,97 +132,54 @@ public class Deal {
                 eachPlayer.playersHoleCards.put(cardPosition,deck.removeCard());
             }
         }
-        //create it's own method
-        bet = bigBlind;
-        for (int i = 1; i < playersInGame.size();i++)
-        for (HumanPlayer player: playersInGame) {
-            logger.debug(player.getPlayerName());
-            logger.debug(startingChips);
-            logger.debug(player.getPlayersStartingChips());
-            playersInGame.get(0).setPlayersStartingChips(startingChips);
-            //player.setPlayersStartingChips(startingChips);
-            Action action = new Action(this, player);
-            action.move(bet);
-        }
-
-        //create it's own method
-
+        makeMove();
     }
-
+    /**
+     *  creates an action for each move
+     */
+    private void makeMove() {
+        listOfMoves = new ArrayList<>();
+        for (int i = 1; i < playersInGame.size();i++) {
+            playersInGame.get(i).setPlayersStartingChips(startingChips);
+            Action action = new Action(this, playersInGame.get(i));
+            action.move();
+        }
+    }
+    /**
+     *  deals first three community cards
+     */
     private void flop() {
         for (int i=0; i<3; i++) {
             communityCards.add(deck.removeCard());
         }
-        for(HumanPlayer player: playersInGame) {
-            Action action = new Action(this, player);
-            action.move(bet);
-        }
         stateOfHand = StateOfHand.FLOP;
     }
-
+    /**
+     *  deals fourth community card
+     */
     private void turn() {
         communityCards.add(deck.removeCard());
-        for(HumanPlayer player: playersInGame) {
-            Action action = new Action(this, player);
-            action.move(bet);
-        }
         stateOfHand = StateOfHand.TURN;
     }
-
+    /**
+     *  deals fifth card
+     */
     private void river() {
         communityCards.add(deck.removeCard());
-        for(HumanPlayer player: playersInGame) {
-            Action action = new Action(this, player);
-            action.move(bet);
-        }
         stateOfHand = StateOfHand.RIVER;
     }
-
+    /**
+     *  clears the deck
+     */
     public void clearDeck() {
         playersInGame.clear();
         communityCards.clear();
         stateOfHand = StateOfHand.CLEAR;
     }
 
-    @Override
-    public String toString() {
-        Card card1;
-        Card card2;
-        int b = 0;
-
-        String str="";
-        for(Card communityCard: communityCards) {
-            if (communityCard!=null)
-                str += communityCard.toString() + ' ';
-        }
-
-        String NL = System.getProperty("line.separator");
-        str += NL;
-
-        for (HumanPlayer eachPlayer:playersInGame) {
-                card1 = eachPlayer.playersHoleCards.get("Hole Card #1");
-                card2 = eachPlayer.playersHoleCards.get("Hole Card #2");
-                str += "Player " + (b+1) + ": " + card1 + ' ';
-                str += card2 + "  ";
-            b++;
-        }
-        return str;
-    }
-
-    public void setNumberOfPlayers(int players) {
-
-        //logger.debug(HumanPlayer.playersHoleCards);
-        this.numberOfPlayers = players;
-        for(int i=0; i<players;i++){
-
-        }
-    }
-
-
-    //private HashMap<HumanPlayer, Rank> playerToScoreMap = new HashMap<>();
-
-
-
+    /**
+     *  initializes score collections
+     */
     public void scoreHands() {
         scoreList = new ArrayList<>();
         scoreToPlayerMap = new HashMap<>();
@@ -237,15 +188,10 @@ public class Deal {
         addScoreToCollections();
         // sort the scores
         Collections.sort(getScoreList());
-
-        //Rank score;
-        //for (int i=0; i<getNumberOfPlayers(); i++) {
-            //int rank = i+1;
-            //score = scoreList.get(getNumberOfPlayers()-i-1);
-            ///scoreToRankMap.put(score, rank);
-        //}
     }
-
+    /**
+     *  add scores to collections to be evaluated
+     */
     public void addScoreToCollections() {
         int rank = 1;
         Evaluator evaluator = new Evaluator();
@@ -253,7 +199,6 @@ public class Deal {
             ArrayList<Card> cards = getCombinedCards(eachPlayer);
             Rank score = evaluator.evaluate(cards);
             getScoreList().add(score);
-            //playerToScoreMap.put(eachPlayer, score);
             scoreToPlayerMap.put(score, eachPlayer);
             scoreToRankMap.put(score, rank);
             rank++;
@@ -275,28 +220,12 @@ public class Deal {
         return playersInGame;
     }
 
-    public void setPlayersInGame(List<HumanPlayer> playersInGame) {
-        this.playersInGame = playersInGame;
-    }
-
     public Deck getDeck() {
         return deck;
     }
 
-    public void setDeck(Deck deck) {
-        this.deck = deck;
-    }
-
-    public int getNumberOfPlayers() {
-        return numberOfPlayers;
-    }
-
     public List<Card> getCommunityCards() {
         return communityCards;
-    }
-
-    public void setCommunityCards(List<Card> communityCards) {
-        this.communityCards = communityCards;
     }
 
     public StateOfHand getStateOfHand() {
@@ -322,11 +251,36 @@ public class Deal {
     public void setPot(double pot) {
         this.pot = pot;
     }
+
     public Action getAction() {
         return action;
     }
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    public Double getBet() {
+        return bet;
+    }
+
+    public void setBet(Double bet) {
+        this.bet = bet;
+    }
+
+    public void setTotalBets(Double totalBets) {
+        this.totalBets = totalBets;
+    }
+
+    public void setBigBlind(double bigBlind) {
+        this.bigBlind = bigBlind;
+    }
+
+    public double getStartingChips() {
+        return startingChips;
+    }
+
+    public void setStartingChips(double startingChips) {
+        this.startingChips = startingChips;
     }
 }

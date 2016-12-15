@@ -14,7 +14,10 @@ import poker.persistence.AbstractDao;
 import poker.persistence.UserDao;
 
 /**
- * Created by student on 11/29/16.
+ *  This is the servlet to create the game
+ *
+ *@author    Jason Avery
+ *@since     Nov 18 2016
  */
 @WebServlet(name = "CreateGame", urlPatterns = { "/createGame" } )
 
@@ -23,14 +26,31 @@ public class CreateGame extends HttpServlet {
 
     private final Logger log = Logger.getLogger(this.getClass());
 
-
+    /**
+     *  Handles HTTP POST requests.
+     *
+     *@param  req                   the HttpServletRequest object
+     *@param  resp                  the HttpServletResponse object
+     *@exception ServletException  if there is a Servlet failure
+     *@exception IOException       if there is an IO failure
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Game game = new Game();
         game.setNumberOfPlayers(Integer.parseInt(req.getParameter("numberOfPlayers")));
         game.setStartingChips(Double.parseDouble(req.getParameter("startingChips")));
-        game.setUserName(req.getParameter("name"));
+        log.debug(req.getRequestURL());
+        log.debug(req.getRemoteUser());
+        if (req.getRemoteUser() != null) {
+            game.setUserName(req.getRemoteUser());
+            log.debug(game.getUserName());
+        }else {
+            log.debug(req.getHeader("Authorization"));
+            game.setUserName(req.getParameter("name"));
+
+        }
+
 
 
 

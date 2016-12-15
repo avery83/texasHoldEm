@@ -23,17 +23,20 @@ public class UserDao {
         List<Users> users = new ArrayList<>();
         Session session = SessionFactoryProvider.getSessionFactory().openSession();
         users = session.createCriteria(Users.class).list();
+        session.close();
         return users;
     }
 
     public Users getUser(String userName) {
         Session session = SessionFactoryProvider.getSessionFactory().openSession();
         Users user = (Users) session.get(Users.class, userName);
+        session.close();
         return user;
     }
 
     public void updateUser(Users user) {
-
+        AbstractDao dao = new AbstractDao(Users.class);
+        dao.update(user);
     }
 
     public void deleteUser(Users user) {
